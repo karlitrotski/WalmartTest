@@ -1,0 +1,89 @@
+﻿@model WalmartChallenge.Models.HomeModel
+@{
+    ViewBag.Title = "";
+}
+<style>
+    .imgProducto {
+        max-height: 150px;
+        max-width: 150px;
+    }
+    .product {
+        border: 2px solid #0071ce; 
+        border-radius: 10px; 
+        margin: 5px; 
+        text-align:center;
+    }
+    .product:hover {
+        border: 2px solid #daac00;
+        cursor: pointer;
+    }
+</style>
+@using (Html.BeginForm("Index", "Home", FormMethod.Post, new { id = "formWalmart", enctype = "multipart/form-data" }))
+{
+<script>
+        function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0) }
+        $(document).ready(function () {
+            $("#search").click(function () {
+                $("#divResults").show();
+            });
+            $("#formWalmart").submit(function (event) {
+                var text = $("#@Html.IdFor(m => m.search)").val();
+                if (!isNumber(text)) {
+                    if (text.length <= 3) {
+                        alert("Búsqueda incorrecta, buscar por ID de producto o por palabras mayores a 3 letras.");
+                    }
+                }
+            });
+        });
+
+</script>
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #0071ce; border-color: #0071ce">
+        <div class="container" style="padding: 10px 0px;">
+            <div class="navbar-header">
+                <img src="~/Content/Images/logo.svg" style="height:50px;">
+            </div>
+            <div class="navbar-form navbar-right">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.search, new { placeholder = "Search", @class = "form-control", })
+                    <div class="input-group-btn">
+                        <button id="search" class="btn btn-default" type="submit">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <br /><br />
+              <div id="divResults" style="text-align:center; font-family: Verdana,sans-serif;">
+                  @if (Model != null && Model.products != null)
+                  {
+                      if (Model.products.Count == 0)
+                      {
+                          <p>No se encontraron resultados para esa búsqueda.</p>
+                      }
+                      else
+                      {
+                          foreach (var item in Model.products)
+                          {
+                              <div class="col-sm-3 product">
+                                  <p style="margin-top:5px;">@item.brand - @item.description</p>
+                                  <p><img class="imgProducto" src="https://@item.image" alt="@item.description" /></p>
+                                  @if (Model.isPalindrome)
+                                  {
+                                      <p>$@((item.price/2).ToString("N0")) <span style="background-color:green; color:white; padding:4px; border-radius: 3px;">50%</span></p>
+                                      <p style="text-decoration:line-through;">$@(item.price.ToString("N0"))</p>
+                                  }
+                                  else
+                                  {
+                                      <p>$@(item.price.ToString("N0"))</p>
+                                  }
+
+                              </div>
+                          }
+                      }
+                  }
+              </div>
+    </div>
+}
