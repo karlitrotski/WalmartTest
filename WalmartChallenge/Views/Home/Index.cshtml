@@ -29,7 +29,7 @@
             $("#formWalmart").submit(function (event) {
                 var text = $("#@Html.IdFor(m => m.search)").val();
                 if (!isNumber(text)) {
-                    if (text.length <= 3) {
+                    if (text.length < 3) {
                         alert("Búsqueda incorrecta, buscar por ID de producto o por palabras mayores a 3 letras.");
                     }
                 }

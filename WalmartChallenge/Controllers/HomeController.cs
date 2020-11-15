@@ -29,7 +29,7 @@ namespace WalmartChallenge.Controllers
                     x.id == n ||
                     x.brand.Contains(text) ||
                     x.description.Contains(text)).ToList();
-            } else if (text.Length > 3)
+            } else if (text.Length >= 3)
             {
                 result = collection.Find(x =>
                     x.brand.Contains(text) ||
