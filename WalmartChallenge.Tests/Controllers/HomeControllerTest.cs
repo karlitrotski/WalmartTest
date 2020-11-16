@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using WalmartChallenge;
+using WalmartChallenge.Models;
 using WalmartChallenge.Controllers;
+using MongoDB.Driver;
 
 namespace WalmartChallenge.Tests.Controllers
 {
@@ -26,28 +27,44 @@ namespace WalmartChallenge.Tests.Controllers
         }
 
         [TestMethod]
-        public void About()
+        public void IsPalindrome()
         {
             // Arrange
             HomeController controller = new HomeController();
 
             // Act
-            ViewResult result = controller.About() as ViewResult;
+            bool result = controller.IsPalindrome("abba");
 
             // Assert
-            Assert.AreEqual("Your application description page.", result.ViewBag.Message);
+            Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void Contact()
+        public void IsNotPalindrome()
         {
             // Arrange
             HomeController controller = new HomeController();
 
             // Act
-            ViewResult result = controller.Contact() as ViewResult;
+            bool result = controller.IsPalindrome("abab");
 
             // Assert
+            Assert.IsTrue(!result);
+        }
+
+        [TestMethod]
+        public void GetDataFromMongoDB()
+        {
+            string text = "azwan ubdehk";
+            var isNumeric = int.TryParse(text, out int n);
+            string conn = System.Configuration.ConfigurationManager.ConnectionStrings["dbWalmart"].ToString();
+            List<Product> result = null;
+            MongoClient client = new MongoClient(conn);
+            IMongoDatabase database = client.GetDatabase("WalmartChallenge");
+            IMongoCollection<Product> collection = database.GetCollection<Product>("Products");
+            result = collection.Find(x =>
+                    x.brand.Contains(text) ||
+                    x.description.Contains(text)).ToList();
             Assert.IsNotNull(result);
         }
     }
